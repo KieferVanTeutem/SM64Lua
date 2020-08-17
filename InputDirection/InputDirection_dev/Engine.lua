@@ -61,10 +61,10 @@ function Engine.inputsForAngle()
 	
 	-- Note that the only case we don't check is regular "Match angle" which just uses Settings.goalAngle and does not do wallkick reversal.
 	if (Settings.Layout.Button.selectedItem == Settings.Layout.Button.MATCH_YAW) then
-		goal = Engine.getEffectiveAngle(Memory.Mario.FacingYaw)
+		goal = Memory.Mario.FacingYaw
 		if (Engine.wallKickReverse()) then goal = goal + 32768 end
 	elseif (Settings.Layout.Button.selectedItem == Settings.Layout.Button.REVERSE_ANGLE) then
-		goal = Engine.getEffectiveAngle(Memory.Mario.FacingYaw) + 32768
+		goal = Memory.Mario.FacingYaw + 32768
 		if (Engine.wallKickReverse()) then goal = goal + 32768 end
 	elseif (Settings.Layout.Button.selectedItem == Settings.Layout.Button.MATCH_ANGLE and Settings.Layout.Button.strain_button.dyaw == true) then
 		goal = Engine.getDyaw(goal)
@@ -138,9 +138,9 @@ function Engine.inputsForAngle()
 	--print(string.format("Prep input for frame %d curSpd %f goal %d", emu.samplecount() + 1, Memory.Mario.FSpeed, goal % 65536))
 	
 	-- Set up binary search
-	minang = 1
-	maxang = Angles.COUNT
-	midang = math.floor((minang + maxang) / 2)
+	local minang = 1
+	local maxang = Angles.COUNT
+	local midang = math.floor((minang + maxang) / 2)
 	-- Binary search
 	while (minang <= maxang) do
 		if (Engine.getEffectiveAngle(Angles.ANGLE[midang].angle + Memory.Camera.Angle) < goal) then
