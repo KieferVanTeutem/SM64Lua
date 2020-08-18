@@ -31,6 +31,7 @@ function Input.check(xmouse, ymouse)
 					changes = true
 					Buttons[i]:onclick()
 					Settings.Layout.TextArea.selectedItem = 0
+					Settings.Layout.TextAreaAtan.selectedItem = 0
 				end
 			elseif Buttons[i].type == ButtonType.textArea then
 				if Input.isInRange(xmouse, ymouse, Buttons[i].box[1], Buttons[i].box[2], Buttons[i].box[3], Buttons[i].box[4]) then

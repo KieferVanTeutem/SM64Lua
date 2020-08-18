@@ -1,5 +1,6 @@
 Settings = {
-	goalAngle = 0
+	goalAngle = 0,
+	atanEndFrame = 0
 }
 
 Settings.Layout = {
@@ -23,18 +24,20 @@ Settings.Layout = {
 			}
 		},
 		strain_button = {
-		always = false,
-		target_strain = true,
-		left = true,
-		right = false,
-		dyaw = false
+			always = false,
+			target_strain = true,
+			left = true,
+			right = false,
+			dyaw = false,
+			atan = false
 		}
 	},
 	TextArea = {
-		items = {'Match Angle'},
 		selectedItem = 0,
-		selectedChar = 1,
 		
 		MATCH_ANGLE = 1
+	},
+	TextAreaAtan = {
+		selectedItem = 0
 	}
 }

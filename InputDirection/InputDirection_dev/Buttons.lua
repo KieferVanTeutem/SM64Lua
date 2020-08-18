@@ -81,7 +81,7 @@ Buttons = {
 		text = "Left",
 		box = {
 			Drawing.Screen.Width + 140,
-			45,
+			35,
 			40,
 			20
 		},
@@ -104,7 +104,7 @@ Buttons = {
 		text = "Right",
 		box = {
 			Drawing.Screen.Width + 180,
-			45,
+			35,
 			50,
 			20
 		},
@@ -127,8 +127,8 @@ Buttons = {
 		text = "DYaw",
 		box = {
 			Drawing.Screen.Width + 145,
-			80,
-			75,
+			60,
+			40,
 			20
 		},
 		enabled = function()
@@ -142,6 +142,77 @@ Buttons = {
 				Settings.Layout.Button.strain_button.dyaw = false
 			else
 				Settings.Layout.Button.strain_button.dyaw = true
+			end
+		end
+	},
+	{
+		type = ButtonType.button,
+		text = "ATan",
+		box = {
+			Drawing.Screen.Width + 185,
+			60,
+			40,
+			20
+		},
+		enabled = function()
+			return true
+		end,
+		pressed = function()
+			return Settings.Layout.Button.strain_button.atan == true
+		end,
+		onclick = function(self)
+			if (Settings.Layout.Button.strain_button.atan == true) then
+				Settings.Layout.Button.strain_button.atan = false
+			else
+				Settings.Layout.Button.strain_button.atan = true
+			end
+		end
+	},
+	{
+		type = ButtonType.button,
+		text = "-2QF",
+		microButton = true,
+		box = {
+			Drawing.Screen.Width + 188,
+			84,
+			29,
+			12
+		},
+		enabled = function()
+			return true
+		end,
+		pressed = function()
+			return Settings.Layout.Button.strain_button.m2qf == true
+		end,
+		onclick = function(self)
+			if (Settings.Layout.Button.strain_button.m2qf == true) then
+				Settings.Layout.Button.strain_button.m2qf = false
+			else
+				Settings.Layout.Button.strain_button.m2qf = true
+			end
+		end
+	},
+	{
+		type = ButtonType.button,
+		text = "-1QF",
+		microButton = true,
+		box = {
+			Drawing.Screen.Width + 188,
+			96,
+			29,
+			12
+		},
+		enabled = function()
+			return true
+		end,
+		pressed = function()
+			return Settings.Layout.Button.strain_button.m1qf == true
+		end,
+		onclick = function(self)
+			if (Settings.Layout.Button.strain_button.m1qf == true) then
+				Settings.Layout.Button.strain_button.m1qf = false
+			else
+				Settings.Layout.Button.strain_button.m1qf = true
 			end
 		end
 	},
@@ -251,6 +322,7 @@ Buttons = {
 	{
 		type = ButtonType.textArea,
 		inputSize = 5,
+		selectedChar = 1,
 		box = {
 			Drawing.Screen.Width + 145,
 			112,
@@ -268,14 +340,46 @@ Buttons = {
 		end,
 		onclick = function(self)
 			Settings.Layout.TextArea.selectedItem = Settings.Layout.TextArea.MATCH_ANGLE
-			Settings.Layout.TextArea.selectedChar = 1
+			self.selectedChar = 1
 		end,
 		onkeypress = function(self, key)
-			oldkey = math.floor(Settings.goalAngle / math.pow(10, self.inputSize - Settings.Layout.TextArea.selectedChar)) % 10
-			Settings.goalAngle = Settings.goalAngle + (key - oldkey) * math.pow(10, self.inputSize - Settings.Layout.TextArea.selectedChar)
-			Settings.Layout.TextArea.selectedChar = Settings.Layout.TextArea.selectedChar + 1
-			if Settings.Layout.TextArea.selectedChar > self.inputSize then
+			oldkey = math.floor(Settings.goalAngle / math.pow(10, self.inputSize - self.selectedChar)) % 10
+			Settings.goalAngle = Settings.goalAngle + (key - oldkey) * math.pow(10, self.inputSize - self.selectedChar)
+			self.selectedChar = self.selectedChar + 1
+			if self.selectedChar > self.inputSize then
 				Settings.Layout.TextArea.selectedItem = 0
+			end
+		end,
+	},
+	{
+		type = ButtonType.textArea,
+		inputSize = 2,
+		selectedChar = 1,
+		box = {
+			Drawing.Screen.Width + 145,
+			83,
+			39,
+			25
+		},
+		value = function()
+			return Settings.atanEndFrame
+		end,
+		enabled = function()
+			return Settings.Layout.Button.selectedItem == Settings.Layout.Button.MATCH_ANGLE and Settings.Layout.Button.strain_button.atan
+		end,
+		editing = function()
+			return Settings.Layout.TextAreaAtan.selectedItem == 1 and Settings.Layout.Button.strain_button.atan
+		end,
+		onclick = function(self)
+			Settings.Layout.TextAreaAtan.selectedItem = 1
+			self.selectedChar = 1
+		end,
+		onkeypress = function(self, key)
+			oldkey = math.floor(Settings.atanEndFrame / math.pow(10, self.inputSize - self.selectedChar)) % 10
+			Settings.atanEndFrame = Settings.atanEndFrame + (key - oldkey) * math.pow(10, self.inputSize - self.selectedChar)
+			self.selectedChar = self.selectedChar + 1
+			if self.selectedChar > self.inputSize then
+				Settings.Layout.TextAreaAtan.selectedItem = 0
 			end
 		end,
 	}

@@ -70,6 +70,32 @@ function Engine.inputsForAngle()
 		goal = Engine.getDyaw(goal)
 		if (Engine.wallKickReverse()) then goal = goal + 32768 end
 	end
+	
+	-- Arctan straining (Only for "Match angle" and "Match angle" + Dyaw)(TODO: Add .99 trick)
+	if (Settings.Layout.Button.selectedItem == Settings.Layout.Button.MATCH_ANGLE and Settings.Layout.Button.strain_button.atan) then
+		local curFrame = emu.samplecount() + 1           -- Plus one for input delay.
+		local endFrame = Settings.atanEndFrame           -- Final movement frame for arctan section.
+		while endFrame < curFrame do endFrame = endFrame + 100 end -- We only enter the end frame mod 100.
+		local qf       = 4                               -- Quarter frames of movement on the final movement frame (between 1 and 4).
+		if Settings.Layout.Button.strain_button.m1qf then qf = qf - 1 end
+		if Settings.Layout.Button.strain_button.m2qf then qf = qf - 2 end
+		local intDyaw  = goal - Memory.Mario.FacingYaw   -- Desired maximized movement direction (dYaw).
+		local c        = math.tan(intDyaw * math.pi / 32768)
+		if (curFrame == endFrame) then
+			qf = 4 -- For the final angle the QF does not matter since X and Y are both truncated.
+		end
+		local bestDyaw = math.atan(10 * c / (1.5 * (endFrame - curFrame + qf / 4))) * 32768 / math.pi	
+		if (math.cos(intDyaw * math.pi / 32768) < 0) then
+			bestDyaw = bestDyaw + 32768 -- Fix atan(tan(x)) 180 degree ambiguity.
+		end
+		goal = bestDyaw + Memory.Mario.FacingYaw -- Convert best Dyaw back to raw angle.
+		if (curFrame <= endFrame) then
+			print(string.format("Arctan straining frame %d -> %d (%d / 4) qf", curFrame, endFrame, qf))
+			print(string.format("intDyaw %f bestDyaw %f goal %f", intDyaw, bestDyaw, goal))
+		end
+		goal = math.floor(goal + 0.5)
+	end
+	
 	-- Set up target speed
 	if (Settings.Layout.Button.strain_button.target_strain == true) then
 		enableTargetSpeed = 1
